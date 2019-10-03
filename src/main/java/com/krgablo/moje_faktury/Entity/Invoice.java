@@ -22,6 +22,8 @@ public class Invoice {
     @ManyToOne
     User user;
 
+
+
     public User getUser() {
         return user;
     }
@@ -69,4 +71,5 @@ public class Invoice {
     public void setInvoiceIssuer(String invoiceIssuer) {
         this.invoiceIssuer = invoiceIssuer;
     }
+
 }

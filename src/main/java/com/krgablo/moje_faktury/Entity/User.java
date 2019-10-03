@@ -18,20 +18,6 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
     private List<Invoice> invoices;
 
-    public List<Invoice> getInvoices() {
-        return invoices;
-    }
-
-    public void setInvoices(List<Invoice> invoices) {
-        this.invoices = invoices;
-    }
-
-    // SPRAWDZIC CZY POPRAWNE ZANIM WYSLESZ!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-    public void addInvoiceToUser(Invoice invoice){
-        invoices.add(invoice);
-        invoice.setUser(this);
-    }
 
     public int getId() {
         return id;
@@ -55,5 +41,10 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public void addInvoiceToUser(Invoice invoice) {
+        invoices.add(invoice);
+        invoice.setUser(this);
     }
 }
