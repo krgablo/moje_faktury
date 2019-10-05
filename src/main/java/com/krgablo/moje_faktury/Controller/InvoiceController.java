@@ -1,12 +1,15 @@
 package com.krgablo.moje_faktury.Controller;
 
 import com.krgablo.moje_faktury.Entity.Invoice;
+import com.krgablo.moje_faktury.Entity.InvoiceStatus;
 import com.krgablo.moje_faktury.Entity.User;
 import com.krgablo.moje_faktury.Repository.InvoiceRepository;
 import com.krgablo.moje_faktury.Repository.UserReporitory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @RestController
@@ -30,25 +33,18 @@ public class InvoiceController {
         return (List<Invoice>) invoiceRepository.findAll();
     }
 
-    @GetMapping("/showAddTransaction")
-    public Invoice showAddInvoices(@RequestParam("id") Integer id) {
-        userReporitory.findById(id).orElse(null);
-        new Invoice();
-
-        return (Invoice) invoiceRepository.findAll();
-    }
 
     @PostMapping(value = "/invoice/{id}")
     Invoice newInvoice(@RequestBody Invoice newInvoice, @PathVariable("id") int id) {
         User user = userReporitory.findById(id).orElse(null);
         user.addInvoiceToUser(newInvoice);
+        newInvoice.setInvoiceStatus(InvoiceStatus.NOT_PAID);
         return invoiceRepository.save(newInvoice);
 
     }
 
     @GetMapping("/invoices/{id}")
     Invoice findInvoiceById(@PathVariable int id) {
-
         return invoiceRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invoice is not found"));
     }
@@ -62,6 +58,7 @@ public class InvoiceController {
                     invoice.setValue(newInvoice.getValue());
                     invoice.setPaymentDate(newInvoice.getPaymentDate());
                     invoice.setInvoiceIssuer(newInvoice.getInvoiceIssuer());
+                    invoice.setInvoiceStatus(newInvoice.getInvoiceStatus());
                     return invoiceRepository.save(invoice);
                 })
                 .orElseGet(() -> {
@@ -74,6 +71,7 @@ public class InvoiceController {
     void deleteInvoice(@PathVariable int id) {
         invoiceRepository.deleteById(id);
     }
+
 
 
 }

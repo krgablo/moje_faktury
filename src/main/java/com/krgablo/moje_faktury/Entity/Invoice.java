@@ -1,7 +1,7 @@
 package com.krgablo.moje_faktury.Entity;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Table(name = "invoice")
@@ -15,9 +15,11 @@ public class Invoice {
 
     private int value;
 
-    private Date paymentDate;
+    private LocalDate paymentDate;
 
     private String invoiceIssuer;
+
+    private Enum invoiceStatus;
 
     @ManyToOne
     User user;
@@ -56,11 +58,11 @@ public class Invoice {
         this.value = value;
     }
 
-    public Date getPaymentDate() {
+    public LocalDate getPaymentDate() {
         return paymentDate;
     }
 
-    public void setPaymentDate(Date paymentDate) {
+    public void setPaymentDate(LocalDate paymentDate) {
         this.paymentDate = paymentDate;
     }
 
@@ -72,4 +74,11 @@ public class Invoice {
         this.invoiceIssuer = invoiceIssuer;
     }
 
+    public Enum getInvoiceStatus() {
+        return invoiceStatus;
+    }
+
+    public void setInvoiceStatus(Enum invoiceStatus) {
+        this.invoiceStatus = invoiceStatus;
+    }
 }
