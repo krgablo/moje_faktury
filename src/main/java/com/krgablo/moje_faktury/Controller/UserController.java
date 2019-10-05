@@ -3,13 +3,12 @@ package com.krgablo.moje_faktury.Controller;
 import com.krgablo.moje_faktury.Entity.User;
 import com.krgablo.moje_faktury.Repository.UserReporitory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.util.List;
+
+import static com.krgablo.moje_faktury.Entity.Role.ADMIN;
+import static com.krgablo.moje_faktury.Entity.Role.USER;
 
 @RestController
 public class UserController {
@@ -17,25 +16,28 @@ public class UserController {
     @Autowired
     UserReporitory userReporitory;
 
+    @GetMapping("/users/{id}")
+    List<User> allUsersIfAdmin(@PathVariable int id) {
+       User user = userReporitory.findById(id).orElse(null);
 
-    @RequestMapping("/example")
-    @ResponseBody
-    public String userExample() {
-        return "Example registrstion";
-    }
-
-    @GetMapping("/users")
-    List<User> all() {
-        return (List<User>) userReporitory.findAll();
+        if (user.getRole().equals(ADMIN)) {
+            return (List<User>) userReporitory.findAll();
+        }
+        return null;
     }
 
 
     @PostMapping("/registration")
     User newUser(@RequestBody User newUser) {
+        if(newUser.getName().equals("ADMIN")){
+            newUser.setRole(ADMIN);
+        }else{
+            newUser.setRole(USER);
+        }
         return userReporitory.save(newUser);
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/user/{id}")
     User oneUser(@PathVariable int id) {
 
         return userReporitory.findById(id)
@@ -49,6 +51,7 @@ public class UserController {
                 .map(user -> {
                     user.setName(newUser.getName());
                     user.setPassword(newUser.getPassword());
+                    user.setRole(newUser.getRole());
                     return userReporitory.save(user);
                 })
                 .orElseGet(() -> {

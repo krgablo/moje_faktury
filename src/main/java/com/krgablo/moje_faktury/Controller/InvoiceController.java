@@ -9,17 +9,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
 public class InvoiceController {
-        @Autowired
+    @Autowired
     InvoiceRepository invoiceRepository;
-        @Autowired
+    @Autowired
     UserReporitory userReporitory;
-
-
 
 
     @RequestMapping("/invoice_example")
@@ -45,6 +43,9 @@ public class InvoiceController {
 
     @GetMapping("/invoices/{id}")
     Invoice findInvoiceById(@PathVariable int id) {
+        Invoice invoice = invoiceRepository.findById(id).orElse(null);
+        LocalDate now = LocalDate.now();
+        invoice.restTime(now);
         return invoiceRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Invoice is not found"));
     }
@@ -71,6 +72,16 @@ public class InvoiceController {
     void deleteInvoice(@PathVariable int id) {
         invoiceRepository.deleteById(id);
     }
+
+    @GetMapping("/invoices/by_date")
+    List<Invoice> invoicesByDate() {
+
+      List<Invoice>  invoices = (List<Invoice>) invoiceRepository.findAll();
+        Collections.sort(invoices);
+
+        return invoices;
+    }
+
 
 
 

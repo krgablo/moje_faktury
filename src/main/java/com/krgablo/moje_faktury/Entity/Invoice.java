@@ -2,10 +2,14 @@ package com.krgablo.moje_faktury.Entity;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.Collection;
+
+import static java.util.concurrent.TimeUnit.DAYS;
 
 @Entity
 @Table(name = "invoice")
-public class Invoice {
+public class Invoice  implements Comparable<Invoice>{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -19,12 +23,14 @@ public class Invoice {
 
     private String invoiceIssuer;
 
-    private Enum invoiceStatus;
+    private LocalDate today;
+
+    private long daysToPay;
 
     @ManyToOne
     User user;
 
-
+    private Enum invoiceStatus;
 
     public User getUser() {
         return user;
@@ -81,4 +87,22 @@ public class Invoice {
     public void setInvoiceStatus(Enum invoiceStatus) {
         this.invoiceStatus = invoiceStatus;
     }
+    public long getDaysToPay() {
+        return daysToPay;
+    }
+
+
+    public void setDaysToPay(long daysToPay) {
+        this.daysToPay = daysToPay;
+    }
+    public void restTime(LocalDate localDate) {
+        daysToPay = ChronoUnit.DAYS.between(localDate, paymentDate);
+    }
+
+    @Override
+    public int compareTo(Invoice o) {
+
+        return getPaymentDate().compareTo(o.getPaymentDate());
+    }
+
 }

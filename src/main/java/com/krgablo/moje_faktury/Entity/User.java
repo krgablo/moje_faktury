@@ -15,9 +15,10 @@ public class User {
 
     private String password;
 
+    private Enum role;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.MERGE)
     private List<Invoice> invoices;
-
 
     public int getId() {
         return id;
@@ -41,6 +42,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public Enum getRole() {
+        return role;
+    }
+
+    public void setRole(Enum role) {
+        this.role = role;
     }
 
     public void addInvoiceToUser(Invoice invoice) {
